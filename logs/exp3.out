@@ -77,3 +77,46 @@ epoch 033  loss=4.8204  g=85.016  g_EE=3.665  g_EI=0.436
 epoch 034  loss=4.6202  g=85.016  g_EE=3.676  g_EI=0.436
 Testing: (0.0, 0.0, 0.0)
 [Trainer] Fitting 23 FC matrices with of length 50 TRs
+epoch 000  loss=10.0411  g=85.002  g_EE=3.504  g_EI=0.437
+epoch 001  loss=6.8406  g=85.003  g_EE=3.511  g_EI=0.438
+epoch 002  loss=6.5130  g=85.003  g_EE=3.513  g_EI=0.436
+epoch 003  loss=6.2574  g=85.003  g_EE=3.520  g_EI=0.437
+epoch 004  loss=6.1359  g=85.004  g_EE=3.525  g_EI=0.436
+epoch 005  loss=5.9796  g=85.004  g_EE=3.528  g_EI=0.436
+epoch 006  loss=5.8451  g=85.005  g_EE=3.534  g_EI=0.436
+epoch 007  loss=5.7774  g=85.005  g_EE=3.540  g_EI=0.436
+epoch 008  loss=5.8688  g=85.006  g_EE=3.542  g_EI=0.436
+epoch 009  loss=5.4895  g=85.007  g_EE=3.551  g_EI=0.436
+epoch 010  loss=5.3648  g=85.007  g_EE=3.565  g_EI=0.436
+epoch 011  loss=5.4489  g=85.008  g_EE=3.569  g_EI=0.436
+epoch 012  loss=5.3640  g=85.008  g_EE=3.576  g_EI=0.436
+epoch 013  loss=5.4794  g=85.009  g_EE=3.586  g_EI=0.436
+epoch 014  loss=5.3769  g=85.009  g_EE=3.594  g_EI=0.436
+epoch 015  loss=5.1055  g=85.009  g_EE=3.605  g_EI=0.436
+epoch 016  loss=5.1696  g=85.010  g_EE=3.611  g_EI=0.436
+epoch 017  loss=5.1019  g=85.011  g_EE=3.623  g_EI=0.436
+epoch 018  loss=5.2557  g=85.011  g_EE=3.628  g_EI=0.436
+epoch 019  loss=4.9416  g=85.012  g_EE=3.636  g_EI=0.436
+epoch 020  loss=4.8706  g=85.012  g_EE=3.647  g_EI=0.436
+epoch 021  loss=5.0179  g=85.013  g_EE=3.651  g_EI=0.436
+epoch 022  loss=4.8833  g=85.013  g_EE=3.654  g_EI=0.436
+epoch 023  loss=4.9596  g=85.013  g_EE=3.662  g_EI=0.436
+epoch 024  loss=4.8489  g=85.014  g_EE=3.670  g_EI=0.436
+epoch 025  loss=4.8864  g=85.014  g_EE=3.675  g_EI=0.436
+epoch 026  loss=4.8737  g=85.014  g_EE=3.680  g_EI=0.436
+epoch 027  loss=4.7572  g=85.015  g_EE=3.688  g_EI=0.436
+epoch 028  loss=4.8214  g=85.015  g_EE=3.692  g_EI=0.436
+epoch 029  loss=4.7927  g=85.015  g_EE=3.695  g_EI=0.436
+epoch 030  loss=4.7032  g=85.015  g_EE=3.702  g_EI=0.436
+epoch 031  loss=4.6678  g=85.016  g_EE=3.709  g_EI=0.436
+epoch 032  loss=4.8566  g=85.016  g_EE=3.711  g_EI=0.436
+epoch 033  loss=4.6592  g=85.017  g_EE=3.716  g_EI=0.436
+epoch 034  loss=4.7789  g=85.017  g_EE=3.718  g_EI=0.436
+(0.0, 0.0, 0.0)  →  FC-corr = 0.097
+Testing: (0.0, 0.0, 0.05)
+[Trainer] Fitting 23 FC matrices with of length 50 TRs
+epoch 000  loss=10.2035  g=85.003  g_EE=3.509  g_EI=0.437
+epoch 001  loss=6.9760  g=85.003  g_EE=3.513  g_EI=0.438
+epoch 002  loss=6.4649  g=85.004  g_EE=3.520  g_EI=0.436
+epoch 003  loss=6.2552  g=85.005  g_EE=3.528  g_EI=0.437
+epoch 004  loss=6.2309  g=85.005  g_EE=3.532  g_EI=0.436

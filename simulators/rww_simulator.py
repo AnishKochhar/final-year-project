@@ -22,13 +22,13 @@ class RWWSubjectSimulator:
         else:
             g_fic = torch.full((node_size, 1), 0.42, device=DEVICE)
 
-        self.g_fic = g_fic
 
         self.params = ParamsRWW(
             g       = par(g_init, g_init, 1/10, True, True),   # default values – tune later
             g_EE    = par(3.5, fit_par=True),
             g_EI    = par(0.42, fit_par=True),
-            g_IE    = par(0.42, fit_par=False),         # scalar placeholder
+            g_IE    = par(0.42, fit_par=False),         # scalar
+            g_FIC   = par(g_fic, fit_par=True),         # vector
             I_0     = par(0.2),
             std_in  = par(0.0),
             std_out = par(0.01)
@@ -36,9 +36,8 @@ class RWWSubjectSimulator:
 
         self.model = RNNRWW(node_size=node_size, TRs_per_window=TP_per_window,
                             step_size=step_size, sampling_size=sampling_size, 
-                            tr=tr, sc=sc, use_fit_gains=True, params=self.params)
+                            tr=tr, sc=sc, use_fit_gains=True, params=self.params, use_fic=use_fic)
         
-        self.model.register_buffer('g_fic', self.g_fic)
 
     def forward_window(self, x0, hE0):
         ext = torch.zeros(self.node_size, self.model.steps_per_TR, self.TP, device=DEVICE)

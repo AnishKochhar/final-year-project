@@ -30,11 +30,11 @@ def run_fit(loader, subject, lambdas, epochs, lr, g = 50, step = 0.05):
     fit = Model_fitting(sim.model, cost, device=DEVICE)
     fit.train(u=0, empFcs=emp_FCs, num_epochs=epochs, num_windows=1, learningrate=lr, max_chunks=20, early_stopping=True)
 
-    emp_ts   = loader.all_bold[subject]
-    n_win    = emp_ts.shape[1] // sim.model.TRs_per_window
-    _, fc_s  = fit.simulate(u=0, num_windows=n_win)
-    fc_e     = np.corrcoef(emp_ts)
-    m        = np.tril_indices(fc_e.shape[0], -1)
+    emp_ts = loader.all_bold[subject]
+    n_win = emp_ts.shape[1] // sim.model.TRs_per_window
+    _, fc_s = fit.simulate(u=0, num_windows=n_win)
+    fc_e = np.corrcoef(emp_ts)
+    m = np.tril_indices(fc_e.shape[0], -1)
     return np.corrcoef(fc_s[m], fc_e[m])[0,1], fit.trainingStats.loss
 
 def run_lambda(loader, subject, lambdas, epochs, lr, g = 50, step = 0.05, its=3):
@@ -60,7 +60,6 @@ def main():
     distance_matrices_path = os.path.join(args.data_root, "schaefer100_dist.npy")
     fmri_path = os.path.join(args.data_root, "BOLD Timeseries HCP.mat")
     sc_dir = os.path.join(args.data_root, "distance_matrices")
-    global loader
     loader = BOLDDataLoader(fmri_path, sc_dir, distance_matrices_path, chunk_length=50)
     loader._split_into_chunks()
 

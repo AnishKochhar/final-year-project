@@ -38,7 +38,7 @@ class par:
         
         Parameters
         ----------
-        val : Float (or Array)
+        val : Float | Array-like | toroch.Tensor
             The parameter value (or an array of node specific parameter values)
         prior_mean : Float
             Prior mean of the data value
@@ -67,10 +67,15 @@ class par:
             prior_mean = 0
             prior_var = 0
     
-        self.val = torch.tensor(val, dtype=torch.float32).to(device)
+        if isinstance(val, torch.Tensor):
+            self.val = val.to(dtype=torch.float32, device=device)
+        else:
+            self.val = torch.tensor(val, dtype=torch.float32).to(device)
+            
         self.asLog = asLog # Store log(val) instead of val directly, so that val itself will always stay positive during training
+        
         if asLog:
-            self.val = torch.log(self.val) #TODO: It's not ideal that the attribute is called val when it might be log(val)
+            self.val = torch.log(self.val) # TODO: It's not ideal that the attribute is called val when it might be log(val)
             
         self.prior_mean = torch.tensor(prior_mean, dtype=torch.float32).to(device)
         self.prior_var = torch.tensor(prior_var, dtype=torch.float32).to(device)

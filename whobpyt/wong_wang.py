@@ -101,7 +101,7 @@ class RNNRWW(AbstractNMM):
     def __init__(self, node_size: int,
                  TRs_per_window: int, step_size: float, sampling_size: float, tr: float, sc: torch.Tensor, use_fit_gains: bool,
                  params: ParamsRWW, use_Bifurcation: bool = True, use_Gaussian_EI: bool = False, use_Laplacian: bool = True,
-                 use_dynamic_boundary: bool = True) -> None:
+                 use_dynamic_boundary: bool = True, use_fic: bool = True) -> None:
         """
         Parameters
         ----------
@@ -130,6 +130,8 @@ class RNNRWW(AbstractNMM):
             Whether to use the negative laplacian of the (fitted) structural connectivity as the structural connectivity
         use_dynamic_boundary: bool
             Whether to have tanh function applied at each time step to constrain parameter values. Simulation results will become dependent on a certian step_size.
+        use_fic: bool
+            Whether to use to use the vectorized Feedback Inhibition Control (FIC) over the g_IE scalar for computing inhibition scaling
         """        
         method_arg_type_check(self.__init__) # Check that the passed arguments (excluding self) abide by their expected data types
         
@@ -159,6 +161,7 @@ class RNNRWW(AbstractNMM):
         self.use_Bifurcation = use_Bifurcation
         self.use_Gaussian_EI = use_Gaussian_EI
         self.use_dynamic_boundary = use_dynamic_boundary
+        self.use_fic = use_fic
         self.params = params
         self.params_fitted = {}
 
@@ -369,9 +372,14 @@ def integration_forward(model, external, hx, hE):
     # Coupling parameters
     g = model.params.g.value()  # global coupling (from all nodes E_j to single node E_i)
     g_EE = (0.001 + m(model.params.g_EE.value()))  # local self excitatory feedback (from E_i to E_i)
-    g_IE = (0.001 + m(model.params.g_IE.value()))  # local inhibitory coupling (from I_i to E_i)
     g_EI = (0.001 + m(model.params.g_EI.value()))  # local excitatory coupling (from E_i to I_i)
-    # g_fic = (0.001 + m(model.params.g_fic.value()))
+    # g_IE = (0.001 + m(model.params.g_IE.value()))  # local inhibitory coupling (from I_i to E_i)
+    # g_FIC = (0.001 + m(model.params.g_FIC.value()))
+
+    if model.use_fic:
+        g_inhib = 0.001 + m(model.params.g_FIC.value()) # (N, 1)
+    else:
+        g_inhib = 0.001 + m(model.params.g_IE.value())  # scalar
 
     aE = model.params.aE.value()
     bE = model.params.bE.value()
@@ -457,7 +465,7 @@ def integration_forward(model, external, hx, hE):
                     I[:, sample_i] = I_mean[:, 0] + 0.001 * torch.randn(model.node_size, device=DEVICE)
 
                 # Calculate the input recurrent.
-                IE = torch.tanh(m(W_E * I_0 + g_EE * E + g * torch.matmul(lap_adj, E) - model.g_fic * I))  # input currents for E
+                IE = torch.tanh(m(W_E * I_0 + g_EE * E + g * torch.matmul(lap_adj, E) - g_inhib * I))  # input currents for E
                 II = torch.tanh(m(W_I * I_0 + g_EI * E - I))  # input currents for I
 
                 # Calculate the firing rates.
@@ -527,7 +535,7 @@ def integration_forward(model, external, hx, hE):
                     I[:, sample_i] = I_mean[:, 0] + 0.001 * torch.randn(model.node_size, device=DEVICE)
 
                 # Calculate the input recurrent.
-                IE = 1 * torch.tanh(m(W_E * I_0 + g_EE * E + g * torch.matmul(lap_adj, E) - model.g_fic * I))  # input currents for E
+                IE = 1 * torch.tanh(m(W_E * I_0 + g_EE * E + g * torch.matmul(lap_adj, E) - g_inhib * I))  # input currents for E
                 II = 1 * torch.tanh(m(W_I * I_0 + g_EI * E - I))  # input currents for I
 
                 # Calculate the firing rates.

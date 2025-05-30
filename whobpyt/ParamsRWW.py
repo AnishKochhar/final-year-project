@@ -33,8 +33,9 @@ class   ParamsRWW(AbstractParams):
             # Coupling parameters
             "g": par(20.),  # global coupling (from all nodes E_j to single node E_i)
             "g_EE": par(.1),  # local self excitatory feedback (from E_i to E_i)
-            "g_IE": par(.1),  # local inhibitory coupling (from I_i to E_i)
             "g_EI": par(0.1),  # local excitatory coupling (from E_i to I_i)
+            "g_IE": par(.1),  # local inhibitory coupling (from I_i to E_i)
+            "g_FIC": par(.1), # vectorized (per node) inhibitory coupling
 
             "aE": par(310),
             "bE": par(125),
