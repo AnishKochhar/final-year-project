@@ -283,7 +283,8 @@ class Model_fitting(AbstractFitting):
                 f"loss={curr_loss:.4f}  "
                 f"g={self.model.params.g.val.item():.3f}  "
                 f"g_EE={self.model.params.g_EE.val.item():.3f}  "
-                f"g_EI={self.model.params.g_EI.val.item():.3f}"
+                f"g_EI={self.model.params.g_EI.val.item():.3f} "
+                f"kappa={self.model.params.kappa.val.item():.2f}"
             )
 
             # NMM/Other Parameter info for the Epoch (a list where a number is recorded every window of every record)            

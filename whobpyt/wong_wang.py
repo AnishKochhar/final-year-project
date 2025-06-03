@@ -377,7 +377,8 @@ def integration_forward(model, external, hx, hE):
     # g_FIC = (0.001 + m(model.params.g_FIC.value()))
 
     if model.use_fic:
-        g_inhib = 0.001 + m(model.params.g_FIC.value()) # (N, 1)
+        kappa = model.params.kappa.value()
+        g_inhib = 0.001 + m(kappa * model.params.g_FIC.value()) # (N, 1)
     else:
         g_inhib = 0.001 + m(model.params.g_IE.value())  # scalar
 

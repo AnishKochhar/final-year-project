@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=rww_optuna
+#SBATCH --job-name=exp3_reg
 #SBATCH --gres=gpu:1          
 #SBATCH --cpus-per-task=8     
 #SBATCH --partition=gpgpuC
@@ -13,4 +13,4 @@
 source /vol/bitbucket/$USER/dlenv/bin/activate
 cd /vol/bitbucket/$USER/whobpyt
 
-python -u -m experiments.regularizer_ablation --epochs 35 --lr 0.001 --g 85
+python -u -m experiments.regularizer_ablation --subject 42 --trials 50 --epochs 35 --study-name e3_optuna

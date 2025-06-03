@@ -11,7 +11,7 @@ def _save(fig, tag, outdir="plots", subdir=""):
     print(f"[Plot] Saved {path}")
 
 
-def heatmap_fc(sim_fc, emp_fc=None, subj=None, r=None, subtitle=None, tag="fc", subdir=""):
+def heatmap_fc(sim_fc, emp_fc=None, subj=None, r=None, subtitle=None, tag="fc", subdir="", outdir="plots"):
     sim_fc = _np(sim_fc); fig, ax = plt.subplots(1, 2 if emp_fc is not None else 1, figsize=(8, 4))
     sns.heatmap(sim_fc, vmin=-1, vmax=1, cmap="coolwarm", ax=ax if emp_fc is None else ax[0], square=True, cbar_kws={"label": "corr"})
     (ax if emp_fc is None else ax[0]).set_title("Sim FC")
@@ -24,7 +24,7 @@ def heatmap_fc(sim_fc, emp_fc=None, subj=None, r=None, subtitle=None, tag="fc", 
     if r is not None:    supt.append(f"r = {r:.3f}")
     if subtitle is not None: supt.append(subtitle)
     if supt: fig.suptitle(" | ".join(supt))
-    _save(fig, f"{tag}_{subj or ''}", subdir=subdir)
+    _save(fig, f"{tag}_{subj or ''}", subdir=subdir, outdir=outdir)
 
 def scatter_fc(sim_fc, emp_fc, subj=None, r=None, tag="scatter", subdir=""):
     sim_fc = _np(sim_fc); emp_fc = _np(emp_fc)
@@ -39,7 +39,7 @@ def scatter_fc(sim_fc, emp_fc, subj=None, r=None, tag="scatter", subdir=""):
         ax.set_title(f"r = {r:.3f}")
     _save(fig, f"{tag}_{subj or ''}", subdir=subdir)
 
-def timeseries(sim_ts, emp_ts, max_nodes=6, tr=0.72, sep=True, tag="ts", subdir=""):
+def timeseries(sim_ts, emp_ts, max_nodes=6, tr=0.72, sep=True, tag="ts", subdir="", outdir="plots"):
     """ sep toggles between all channels on same axis and vertically separating them """
     sim_ts, emp_ts = _np(sim_ts), _np(emp_ts)
     fig, axes = plt.subplots(2, 1, figsize=(12, 6), sharex=False)
@@ -65,7 +65,7 @@ def timeseries(sim_ts, emp_ts, max_nodes=6, tr=0.72, sep=True, tag="ts", subdir=
     
     axes[-1].set_xlabel("Time (s)")
     fig.tight_layout()
-    _save(fig, tag, subdir=subdir)
+    _save(fig, tag, subdir=subdir, outdir=outdir)
 
 
 def laplacian(L, subj, title=None, subdir=""):

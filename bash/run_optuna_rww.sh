@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=8     
 #SBATCH --partition=gpgpuC
 #SBATCH --time=4-00:00:00
-#SBATCH --output=logs/optuna_%j.out
+#SBATCH --output=logs/exp5.out
 
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=ank121@ic.ac.uk
@@ -14,6 +14,6 @@ source /vol/bitbucket/$USER/dlenv/bin/activate
 cd /vol/bitbucket/$USER/whobpyt
 
 python -u -m simulators.optuna_search_rww \
-       --study-name whobpyt_base_new \
-       --trials 50 --n-jobs 1 --epochs 35 \
+       --study-name whobpyt_pop_train \
+       --trials 60 --n-jobs 1 \
        --data-root "/vol/bitbucket/$USER/fyp/HCP Data"
