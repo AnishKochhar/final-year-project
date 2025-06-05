@@ -245,7 +245,6 @@ def main():
     parser.add_argument("--pop-epochs", type=int, default=35, help="Population training epochs")
     parser.add_argument("--subj-ids", type=int, nargs='+', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help="List of subject IDs to use for each trial")
 
-
     parser.add_argument("--data-root",   type=str, required=True, help="Root folder containing BOLD and SC data")
     parser.add_argument("--distance-matrix", type=str, default="/vol/bitbucket/ank121/fyp/HCP Data/schaefer100_dist.npy")
     args = parser.parse_args()

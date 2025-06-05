@@ -123,7 +123,7 @@ class CostsFixedFC(AbstractLoss):
     loss: function
         calculates functional connectivity and uses it to calculate the loss
     """
-    def __init__(self, simKey, device = torch.device('cpu')):
+    def __init__(self, simKey, log_loss=True, device = torch.device('cpu')):
         """
         Parameters
         ----------
@@ -134,6 +134,7 @@ class CostsFixedFC(AbstractLoss):
         """
         super(CostsFixedFC, self).__init__()
         self.simKey = simKey
+        self.log_loss = log_loss
         self.device = device
 
     def loss(self, simData, empData):
@@ -192,6 +193,9 @@ class CostsFixedFC(AbstractLoss):
                   * torch.reciprocal(torch.sqrt(torch.sum(torch.multiply(FC_sim_v, FC_sim_v))))
 
         # Bringing the corr-FC to the 0-1 range, and calculating the negative log-likelihood
-        losses_corr = -torch.log(0.5000 + 0.5 * corr_FC) 
+        if self.log_loss:
+            losses_corr = -torch.log(0.5000 + 0.5 * corr_FC) 
+        else:
+            losses_corr = torch.square(1 - corr_FC)
         
         return losses_corr      

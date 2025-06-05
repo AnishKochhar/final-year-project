@@ -41,37 +41,38 @@ def main():
     p.add_argument("--g",         type=float, default=100)
     args = p.parse_args()
 
-    distance_matrices_path = os.path.join(args.data_root, "schaefer100_dist.npy")
-    fmri_path = os.path.join(args.data_root, "BOLD Timeseries HCP.mat")
-    sc_dir = os.path.join(args.data_root, "distance_matrices")
-    loader = BOLDDataLoader(fmri_path, sc_dir, distance_matrices_path, chunk_length=50)
-    loader._split_into_chunks()
+    # distance_matrices_path = os.path.join(args.data_root, "schaefer100_dist.npy")
+    # fmri_path = os.path.join(args.data_root, "BOLD Timeseries HCP.mat")
+    # sc_dir = os.path.join(args.data_root, "distance_matrices")
+    # loader = BOLDDataLoader(fmri_path, sc_dir, distance_matrices_path, chunk_length=50)
+    # loader._split_into_chunks()
 
-    stats = {"fic": [], "scalar": []}
-    for subject in args.subjects:
-        print(f"[MAIN] Starting trials for subject = {subject}")
-        corr_fic, ep = fit_subject(loader, subject, True, args.epochs, args.lr, args.g)
-        stats["fic"].append((corr_fic, ep))
-        corr_sca, ep = fit_subject(loader, subject, False, args.epochs, args.lr, args.g)
-        stats["scalar"].append((corr_sca, ep))
+    stats = {"fic": [(0.313, 29), (0.369, 49), (0.329, 50), (0.382, 50), (0.284, 50)], "scalar": [(0.263, 35), (0.325, 50), (0.244, 50), (0.340, 50), (0.271, 50)]}
+    # stats = {"fic": [], "scalar": []}
+    # for subject in args.subjects:
+    #     print(f"[MAIN] Starting trials for subject = {subject}")
+    #     corr_fic, ep = fit_subject(loader, subject, True, args.epochs, args.lr, args.g)
+    #     stats["fic"].append((corr_fic, ep))
+    #     corr_sca, ep = fit_subject(loader, subject, False, args.epochs, args.lr, args.g)
+    #     stats["scalar"].append((corr_sca, ep))
 
-        print(f"\n[RESULTS] S{subject} FIC = {corr_fic:.3f} | SCALAR = {corr_sca:.3f}\n")
+        # print(f"\n[RESULTS] S{subject} FIC = {corr_fic:.3f} | SCALAR = {corr_sca:.3f}\n")
 
     out = Path("exp4_outputs"); out.mkdir(exist_ok=True)
 
-    with open(out / "results.json","w") as fp:
-        json.dump({k: [[float(x) for x in tup] for tup in v] for k, v in stats.items()}, fp, indent=2)
+    # with open(out / "results.json","w") as fp:
+    #     json.dump({k: [[float(x) for x in tup] for tup in v] for k, v in stats.items()}, fp, indent=2)
 
 
-    def make_plot(metric_idx, ylabel, fname):
-        vals = {"Vector FIC": [s[metric_idx] for s in stats["fic"]],
-                "Scalar $g_{IE}$": [s[metric_idx] for s in stats["scalar"]]}
-        sns.boxplot(data=vals);  sns.swarmplot(data=vals, color=".3", size=6)
-        plt.ylabel(ylabel); plt.tight_layout()
-        plt.savefig(out / fname, dpi=300); plt.close()
+    # def make_plot(metric_idx, ylabel, fname):
+    #     vals = {"Vector FIC": [s[metric_idx] for s in stats["fic"]],
+    #             "Scalar $g_{IE}$": [s[metric_idx] for s in stats["scalar"]]}
+    #     sns.boxplot(data=vals);  sns.swarmplot(data=vals, color=".3", size=6)
+    #     plt.ylabel(ylabel); plt.tight_layout()
+    #     plt.savefig(out / fname, dpi=300); plt.close()
 
-    make_plot(0, "FC correlation",          "fc_corr_box.png")
-    make_plot(1, "Epochs to convergence",   "epochs_box.png")
+    # make_plot(0, "FC correlation",          "fc_corr_box.png")
+    # make_plot(1, "Epochs to convergence",   "epochs_box.png")
 
     def km_curve(durations):
         """x=epoch, y=proportion of runs still training."""
@@ -86,34 +87,34 @@ def main():
     x_fic, y_fic       = km_curve(epochs_fic)
     x_sca, y_sca       = km_curve(epochs_scalar)
 
-    plt.figure(figsize=(3.0, 2.4))
+    plt.figure(figsize=(6, 4))
     plt.step(x_fic, y_fic,  where="post", label="Vector FIC")
     plt.step(x_sca, y_sca,  where="post", label="Scalar $g_{IE}$")
-    plt.xlabel("Training epoch");  plt.ylabel("Runs remaining")
+    plt.xlabel("Training epoch");  plt.ylabel("Runs remaining (%)")
     plt.title("Kaplan-Meier convergence curve")
     plt.legend();  plt.tight_layout()
     plt.savefig(out / "km_convergence.png", dpi=300);  plt.close()
 
 
-    sub_ids   = args.subjects
+    sub_ids   = [10, 20, 30, 40, 50]
     fic_vals  = [fc for fc, _ in stats["fic"]]
     sca_vals  = [fc for fc, _ in stats["scalar"]]
 
-    df_pair = pd.DataFrame({
-        "Subject": sub_ids,
-        "Scalar $g_{IE}$": sca_vals,
-        "Vector FIC": fic_vals
-    }).set_index("Subject")
+    # df_pair = pd.DataFrame({
+    #     "Subject": sub_ids,
+    #     "Scalar $g_{IE}$": sca_vals,
+    #     "Vector FIC": fic_vals
+    # }).set_index("Subject")
 
-    plt.figure(figsize=(3.4, 2.6))
-    for s in df_pair.index:
-        plt.plot(["Scalar $g_{IE}$", "Vector FIC"],
-                df_pair.loc[s], marker="o", lw=1.5, alpha=0.8)
-    plt.ylabel("FC correlation")
-    plt.title("Per-subject change\n(Scalar → Vector FIC)")
-    plt.tight_layout()
-    plt.savefig(out / "paired_fc_slope.png", dpi=300)
-    plt.close()
+    # plt.figure(figsize=(8, 5))
+    # for s in df_pair.index:
+    #     plt.plot(["Scalar $g_{IE}$", "Vector FIC"],
+    #             df_pair.loc[s], marker="o", lw=1.5, alpha=0.8)
+    # plt.ylabel("FC correlation (%)")
+    # plt.title("Per-subject change\n(Scalar → Vector FIC)")
+    # plt.tight_layout()
+    # plt.savefig(out / "paired_fc_slope.png", dpi=300)
+    # plt.close()
 
     jit = 0.15  # horizontal jitter
     xf = np.array([e for _, e in stats["fic"]])    + np.random.uniform(-jit, jit, len(sub_ids))
@@ -121,10 +122,9 @@ def main():
     yf = np.array(fic_vals)
     ys = np.array(sca_vals)
 
-    plt.figure(figsize=(3.0, 2.6))
-    plt.scatter(xf, yf, c="#1f77b4", label="Vector FIC",  s=40, edgecolor="k", alpha=0.9)
-    plt.scatter(xs, ys, c="#ff7f0e", label="Scalar $g_{IE}$",  marker="s",
-                s=40, edgecolor="k", alpha=0.9)
+    plt.figure(figsize=(6, 4))
+    plt.scatter(xf, yf, c="#c20044", label="Vector FIC",  marker="o", s=50, edgecolor="k", alpha=0.7)
+    plt.scatter(xs, ys, c="#2444ff", label="Scalar $g_{IE}$",  marker="s", s=50, edgecolor="k", alpha=0.7)
     plt.grid(lw=0.3, alpha=0.5)
     plt.xlabel("Epochs to convergence")
     plt.ylabel("FC correlation")
@@ -135,13 +135,12 @@ def main():
     plt.close()
 
 
-
-    mean_fc_fic  = np.mean([fc for fc,_ in stats["fic"]])
-    mean_fc_sca  = np.mean([fc for fc,_ in stats["scalar"]])
-    with open(out / "table_E4_1.txt", "w") as f:
-        f.write("Mean FC-corr (Vector FIC)   = {:.4f}\n".format(mean_fc_fic))
-        f.write("Mean FC-corr (Scalar g_IE) = {:.4f}\n".format(mean_fc_sca))
-        f.write("n_subjects = {}\n".format(len(stats["fic"])))
+    # mean_fc_fic  = np.mean([fc for fc,_ in stats["fic"]])
+    # mean_fc_sca  = np.mean([fc for fc,_ in stats["scalar"]])
+    # with open(out / "table_E4_1.txt", "w") as f:
+    #     f.write("Mean FC-corr (Vector FIC)   = {:.4f}\n".format(mean_fc_fic))
+    #     f.write("Mean FC-corr (Scalar g_IE) = {:.4f}\n".format(mean_fc_sca))
+    #     f.write("n_subjects = {}\n".format(len(stats["fic"])))
 
     print("Saved to", out)
 

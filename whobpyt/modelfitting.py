@@ -150,7 +150,7 @@ class Model_fitting(AbstractFitting):
         mask = np.tril_indices(self.model.node_size, -1)
         mask_e = np.tril_indices(self.model.output_size, -1)
         
-        print(f"[Trainer] Fitting {len(empFcs)} FC matrices with of length {self.model.TRs_per_window} TRs")
+        print(f"[Trainer] Fitting {len(empFcs)} FC matrices  with of length {self.model.TRs_per_window} TRs")
 
         # LOOP 1/4: Number of Training Epochs
         for i_epoch in range(num_epochs):
@@ -202,7 +202,7 @@ class Model_fitting(AbstractFitting):
 
                     # calculating loss
                     loss = self.cost.loss(next_window, fc_emp)
-                    
+                     
                     # TIME SERIES: Put the window of simulated forward model.
                     for name in set(self.model.state_names + self.model.output_names):
                         windListDict[name].append(next_window[name].detach().cpu().numpy())
@@ -214,6 +214,7 @@ class Model_fitting(AbstractFitting):
 
                     # Calculate gradient using backward (backpropagation) method of the loss function.
                     loss.backward(retain_graph=True)
+                    # print("g.grad =", self.model.params.g.val.grad.abs().max())
 
                     # DEBUGGER CODE - #TODO: REMOVE
                     if torch.isnan(self.model.gains_con.H).any().item():
@@ -266,12 +267,12 @@ class Model_fitting(AbstractFitting):
 
 
                 # if i_epoch == num_epochs - 1:
-                #     print(f"[{i} / {total_items}] FC_cor: {fc_cor:.3f}") # Pseudo as different windows of the time series have slighly different parameter values
-                    # heatmap_fc(fc_sim, fc_emp, r=fc_cor, tag=f"test_{i}") # Save FC's of final epoch
+                print(f"[{i} / {total_items}] FC_cor: {fc_cor:.3f}") # Pseudo as different windows of the time series have slighly different parameter values
+                # heatmap_fc(fc_sim, fc_emp, r=fc_cor, tag=f"test_{i_epoch}", outdir="plots/sim_fc", subdir="debug") # Save FC's of final epoch
                       
-                if lr_scheduler:
-                    print('Modelparam_lr: ', modelparameter_scheduler.get_last_lr()[0])
-                    print('Hyperparam_lr: ', hyperparameter_scheduler.get_last_lr()[0])
+                # if lr_scheduler:
+                #     print('Modelparam_lr: ', modelparameter_scheduler.get_last_lr()[0])
+                #     print('Hyperparam_lr: ', hyperparameter_scheduler.get_last_lr()[0])
                     
             # TRAINING_STATS: Put the updated model parameters into the history placeholders at the end of every epoch.
             # Additing Mean Loss for the Epoch

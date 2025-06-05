@@ -140,3 +140,26 @@ class BOLDDataLoader:
             if ch["subject"] == subject:
                 yield ch["bold"], self.bold_chunk_to_fc(ch["bold"])
 
+
+    def train_fc_windows(self, subj: int, win_len: int = 200):
+        """ Draw list of 200-TR FC matrices from first 80% of the subject's BOLD (non-overlapping) """
+        ts = self.all_bold[subj]
+        n_trs = ts.shape[1]
+        train_end = int(0.8 * n_trs)
+        fcs = []
+        for start in range(0, train_end - win_len + 1, win_len):
+            chunk = ts[:, start:start + win_len]
+            fcs.append(torch.tensor(bold_to_fc(chunk), dtype=torch.float32, device=DEVICE))
+        return fcs
+
+    def test_fc_and_ts(self, subj: int, win_len: int = 200):
+        """ Return (emp_ts_test, emp_FC_test) from the last 20% """
+        ts = self.all_bold[subj]
+        n_trs = ts.shape[1]
+        test_start = int(0.8 * n_trs)
+        if n_trs - test_start < win_len:          # not enough TRs
+            test_start = n_trs - win_len
+        ts_test = ts[:, test_start:test_start + win_len]
+        fc_test = torch.tensor(bold_to_fc(ts_test),
+                               dtype=torch.float32, device=DEVICE)
+        return ts_test, fc_test

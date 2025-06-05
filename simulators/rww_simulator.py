@@ -9,7 +9,11 @@ class RWWSubjectSimulator:
     def __init__(self, sc: torch.Tensor, node_size: int, tr: float = 0.75,
                  TP_per_window: int = 50, step_size: float = 0.05,
                  sampling_size: int = 5, g_init: float = 50, g_init_var: float = 0.1,
-                 g_EE_init: float = 3.5, g_EI_init: float = 0.42, g_IE_init: float = 0.42,
+                 g_EE_init: float = 3.5, g_EE_init_var: float = 1 / np.sqrt(50),
+                 g_EI_init: float = 0.42, g_EI_init_var: float = 1 / np.sqrt(50),
+                 g_IE_init: float = 0.42, g_IE_init_var: float = 1 / np.sqrt(50),
+                 fit_g: bool = True, fit_g_IE: bool = True, fit_g_EI: bool = True, 
+                 fit_g_EE: bool = True, fit_gains: bool = True, use_bifurcation: bool = True,
                  std_in: float = 0.00, std_out: float = 0.00, I_0: float = 0.2,
                  use_fic: bool = True, shared_params = None):
         """
@@ -38,10 +42,10 @@ class RWWSubjectSimulator:
             g_EI_val = shared_params["g_EI_mean"].value().clone() + eps * shared_params["g_EI_log_sig"].value().clone()
             
             self.params = ParamsRWW(
-                g      = par(g_val,  fit_par=True, device=DEVICE),
-                g_EE   = par(g_EE_val,fit_par=True, device=DEVICE),
-                g_EI   = par(g_EI_val,fit_par=True, device=DEVICE),
-                g_IE   = par(g_IE_init, fit_par=not use_fic, device=DEVICE),
+                g      = par(g_val,  fit_par=fit_g, device=DEVICE),
+                g_EE   = par(g_EE_val,fit_par=fit_g_EE, device=DEVICE),
+                g_EI   = par(g_EI_val,fit_par=fit_g_EI, device=DEVICE),
+                g_IE   = par(g_IE_init, fit_par=fit_g_IE and (not use_fic), device=DEVICE),
                 g_FIC  = par(g_fic, fit_par=use_fic, device=DEVICE),
                 kappa  = kappa_par,
                 I_0     = par(I_0),
@@ -52,10 +56,10 @@ class RWWSubjectSimulator:
             self.mu  = shared_params
         else:
             self.params = ParamsRWW(
-                g       = par(g_init, g_init, g_init_var, True, True),   # default values 
-                g_EE    = par(g_EE_init, fit_par=True),
-                g_EI    = par(g_EI_init, fit_par=True),
-                g_IE    = par(g_IE_init, fit_par=not use_fic),         # scalar
+                g       = par(g_init, g_init, g_init_var, fit_g, fit_g),   # default values 
+                g_EE    = par(g_EE_init, g_EE_init, g_EE_init_var, fit_par=fit_g_EE),
+                g_EI    = par(g_EI_init, g_EI_init, g_EI_init_var, fit_par=fit_g_EI),
+                g_IE    = par(g_IE_init, g_IE_init, g_IE_init_var, fit_par=fit_g_IE and (not use_fic)),         # scalar
                 g_FIC   = par(g_fic, fit_par=use_fic),              # vector
                 kappa   = kappa_par,
                 I_0     = par(I_0),
@@ -64,9 +68,9 @@ class RWWSubjectSimulator:
             )
             self.mu = None
 
-        self.model = RNNRWW(node_size=node_size, TRs_per_window=TP_per_window,
+        self.model = RNNRWW(node_size=node_size, TRs_per_window=TP_per_window, use_Bifurcation=use_bifurcation,
                             step_size=step_size, sampling_size=sampling_size, 
-                            tr=tr, sc=sc, use_fit_gains=True, params=self.params, use_fic=use_fic)
+                            tr=tr, sc=sc, use_fit_gains=fit_gains, params=self.params, use_fic=use_fic)
         
 
     def forward_window(self, x0, hE0):

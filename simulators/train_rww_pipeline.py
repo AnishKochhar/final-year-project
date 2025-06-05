@@ -5,7 +5,7 @@ from whobpyt.modelfitting import Model_fitting
 from simulators.rww_simulator import RWWSubjectSimulator
 from whobpyt.data_loader import DEVICE
 
-def run_subject(subj_idx, loader, num_epochs=20,  lr=0.05, g=50, step=0.01, \
+def run_subject(subj_idx, loader, num_epochs=30,  lr=0.05, g=50, step=0.01, \
                             chunk=30, lam_rate=0.1, lam_spec=0.05, lam_disp=0.05):
     sc = loader.get_subject_connectome(subj_idx, norm=True)
     sim = RWWSubjectSimulator(sc, node_size=sc.shape[0], step_size=step,
@@ -30,9 +30,10 @@ def run_subject(subj_idx, loader, num_epochs=20,  lr=0.05, g=50, step=0.01, \
     emp_ts = loader.all_bold[subj_idx]
     ts_len = emp_ts.shape[1]
     n_windows = ts_len // sim.model.TRs_per_window
-    _, fc_sim = fitter.simulate(u=0, num_windows=n_windows)
-
+    ts_sim, fc_sim = sim.simulate(u=0, num_windows=n_windows, base_window_num=10)
     emp_FC = torch.tensor(np.corrcoef(emp_ts), dtype=torch.float32, device=DEVICE)
+    corr = fitter.evaluate([emp_FC], ts_sim)
+
     mask = np.tril_indices(emp_FC.shape[0], -1)
     corr = np.corrcoef(fc_sim[mask], emp_FC.cpu().numpy()[mask])[0, 1]
 
@@ -45,6 +46,7 @@ if __name__ == "__main__":
     distance_matrix_path = "/vol/bitbucket/ank121/fyp/HCP Data/schaefer100_dist.npy"
 
     p = argparse.ArgumentParser()
+    p.add_argument("--subj-ids", type=int, nargs='+', default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help="List of subject IDs to use for each trial")
     p.add_argument("--chunk",  type=int, default=30)
     p.add_argument("--epochs", type=int, default=35)
     p.add_argument("--g",      type=float, default=36.5)
@@ -59,7 +61,8 @@ if __name__ == "__main__":
     loader._split_into_chunks()
     
     results = {}
-    for s in range(len(loader.all_SC)):
+    for s in args.subj_ids:
+        print(f"[Subject = {s}]")
         corr = run_subject(s, loader, num_epochs=args.epochs, lr=args.lr, g=args.g, step=args.step, \
                             lam_rate=args.lambda_rate, lam_spec=args.lambda_spec, lam_disp=args.lambda_disp)
         results[s] = corr
