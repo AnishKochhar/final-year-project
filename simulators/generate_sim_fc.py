@@ -66,7 +66,7 @@ def main():
                         num_windows=len(emp_FCs), learningrate=args.lr, early_stopping=True)
 
             chunk = sim.model.TRs_per_window
-            n_win = ts_test.shape[1] // chunk
+            n_win = emp_FCs[0].shape[1] // chunk
             ts_sim, fc_sim = sim.simulate(u=0, num_windows=n_win, base_window_num=10)
             tri = np.tril_indices_from(fc_test_np, k=-1)
             r = np.corrcoef(fc_sim[tri], fc_test_np[tri])[0, 1]

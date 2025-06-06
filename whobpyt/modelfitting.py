@@ -150,7 +150,7 @@ class Model_fitting(AbstractFitting):
         mask = np.tril_indices(self.model.node_size, -1)
         mask_e = np.tril_indices(self.model.output_size, -1)
         
-        print(f"[Trainer] Fitting {len(empFcs)} FC matrices  with of length {self.model.TRs_per_window} TRs")
+        print(f"[Trainer] Fitting {len(empFcs)} FC matrices with {num_windows} windows of {self.model.TRs_per_window} TRs")
 
         # LOOP 1/4: Number of Training Epochs
         for i_epoch in range(num_epochs):
@@ -285,7 +285,8 @@ class Model_fitting(AbstractFitting):
                 f"g={self.model.params.g.val.item():.3f}  "
                 f"g_EE={self.model.params.g_EE.val.item():.3f}  "
                 f"g_EI={self.model.params.g_EI.val.item():.3f} "
-                f"kappa={self.model.params.kappa.val.item():.2f}"
+                f"g_IE={self.model.params.g_IE.val.item():.3f} "
+                # f"kappa={self.model.params.kappa.val.item():.2f}"
             )
 
             # NMM/Other Parameter info for the Epoch (a list where a number is recorded every window of every record)            

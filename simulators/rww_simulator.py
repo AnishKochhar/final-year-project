@@ -80,6 +80,7 @@ class RWWSubjectSimulator:
 
     def simulate(self, u=0, num_windows=1, base_window_num=0, transient_num=10):
         """ Run a full-length simulation and return (ts_sim, fc_sim) """
+        print(f"[Simulator] Simulating {num_windows} windows ")
         X  = self.model.createIC(ver=1).to(DEVICE)
         hE = self.model.createDelayIC(ver=1).to(DEVICE)
 

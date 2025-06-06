@@ -21,7 +21,7 @@ class CostsRWW(AbstractLoss):
                  use_spec_reg=False, lambda_spec=0.05, spec_target = 1.02, 
                  use_disp_reg=False, lambda_disp=0.05,
                  use_adv=False, lambda_adv=0.1, disc_path=None,
-                 log_loss=True):
+                 log_loss=True, verbose=False):
         self.mainLoss = CostsFixedFC("bold", log_loss=log_loss, device=DEVICE)
         self.simKey = "bold"
         self.model = model
@@ -46,6 +46,8 @@ class CostsRWW(AbstractLoss):
             else:
                 print(f"[Costs] No discriminator loaded!")
             self.disc.eval()    
+
+        self.verbose = verbose
 
     def spectral_exponent_torch(self, ts, fs=1/0.72, f_lo=0.02, f_hi=0.10):
         """
@@ -188,7 +190,8 @@ class CostsRWW(AbstractLoss):
             adv_loss = adv_loss.squeeze()
     
         # total loss
-        # print(f"LOSS: [FC] {loss_main:.4f}  [EI] {loss_EI:.3f}  [Rate] {loss_rate:.3f}  [Spec] {loss_spec:.3f}  [Disp] {loss_disp:.3f}")
+        if self.verbose:
+            print(f"LOSS: [FC] {loss_main:.4f}  [EI] {loss_EI:.3f}  [Rate] {loss_rate:.3f}  [Spec] {loss_spec:.3f}  [Disp] {loss_disp:.3f}")
         loss = (w_cost * loss_main 
                 + sum(loss_prior) 
                 + 1 * loss_EI 
