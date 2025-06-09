@@ -8,6 +8,7 @@ import torch
 import torch.optim as optim
 import pickle, random
 
+from whobpyt.models.fc_cnn_disc import FCCNNDisc
 from whobpyt.datatypes import Recording
 from whobpyt.datatypes.AbstractFitting import AbstractFitting
 from whobpyt.datatypes.AbstractNMM import AbstractNMM
@@ -41,7 +42,7 @@ class Model_fitting(AbstractFitting):
         Whether the fitting is to run on CPU or GPU
     """
 
-    def __init__(self, model: AbstractNMM, cost: AbstractLoss, device = torch.device('cpu')):
+    def __init__(self, model: AbstractNMM, cost: AbstractLoss, use_adv=False, lambda_adv=0.1, disc_path=None, device = torch.device('cpu')):
         """
         Parameters
         ----------
@@ -69,8 +70,29 @@ class Model_fitting(AbstractFitting):
         self.stop = False
         self.patience = 5
 
+        self.use_adv = use_adv
+        self.lambda_adv = lambda_adv
+        if self.use_adv:
+            self.disc = FCCNNDisc(model.output_size).to(DEVICE)
+            if disc_path is not None:
+                self.disc.load_state_dict(torch.load(disc_path, map_location=DEVICE))
+            else:
+                print(f"[Model Fitting] No discriminator loaded!")
+            self.disc.eval()    
+
         #self.u = None #This is the ML "Training Input"                
         #self.empTS = ts #This is the ML "Training Labels" - A list
+    
+    def print_gradients(self, params_dict, label=""):
+        print(f"\n--- Gradients Report [{label}] ---")
+        for group_name, param_list in params_dict.items():
+            print(f"\n[{group_name.upper()}]")
+            for i, param in enumerate(param_list):
+                if param.grad is None:
+                    print(f"  Param {i}: grad is None")
+                    continue
+                grad = param.grad.detach()
+                print(f"  Param {i}: shape={tuple(grad.shape)}, mean={grad.mean().item():.4e}, std={grad.std().item():.4e}, max={grad.max().item():.4e}, min={grad.min().item():.4e}")
 
     def save(self, filename):
         """
@@ -95,7 +117,8 @@ class Model_fitting(AbstractFitting):
     def train(self, u, empFcs: list, 
               num_epochs: int, num_windows: int, learningrate: float = 0.05, 
               lr_2ndLevel: float = 0.05, lr_scheduler: bool = False, 
-              early_stopping = False, softplus_threshold = 20, max_chunks = None):
+              early_stopping = False, softplus_threshold = 20, max_chunks = None,
+              disc_train_length = 400):
         """
         Parameters
         ----------
@@ -115,13 +138,19 @@ class Model_fitting(AbstractFitting):
             Whether to use the learning rate scheduler
         """            
         method_arg_type_check(self.train, exclude = ['u']) # Check that the passed arguments (excluding self) abide by their expected data types
+        k_stack = disc_train_length / self.model.TRs_per_window
+        offset = 1#np.random.randint(k_stack)
+        print(f"offset = {offset}")
+        assert k_stack >= 1 and disc_train_length % self.model.TRs_per_window == 0,\
+            "disc_train_length must be an integer multiple of TRs_per_window"
+
+        bce = torch.nn.BCELoss()
 
         # Define two different optimizers for each group
         modelparameter_optimizer = optim.Adam(self.model.params_fitted['modelparameter'], lr=learningrate, eps=1e-7)
         hyperparameter_optimizer = optim.Adam(self.model.params_fitted['hyperparameter'], lr=lr_2ndLevel, eps=1e-7)
 
         # Define the learning rate schedulers for each group of parameters
-
         if lr_scheduler:
             total_steps = 0
             for fc_emp in empFcs:
@@ -179,14 +208,13 @@ class Model_fitting(AbstractFitting):
                 external = torch.tensor(
                     np.zeros([self.model.node_size, self.model.steps_per_TR, self.model.TRs_per_window]),
                     dtype=torch.float32, device=DEVICE)
+                
+                recon_accum = torch.tensor(0.0, device=DEVICE)
+                stack_ts = []
 
                 # LOOP 3/4: Number of windowed segments for the recording
                 # for win_idx in range(windowedTS.shape[0]):
                 for win_idx in range(num_windows):
-
-                    # Reset the gradient to zeros after update model parameters.
-                    hyperparameter_optimizer.zero_grad()
-                    modelparameter_optimizer.zero_grad()
 
                     # if the external not empty
                     if not isinstance(u, int):
@@ -197,47 +225,63 @@ class Model_fitting(AbstractFitting):
                     # LOOP 4/4: The loop within the forward model (numerical solver), which is number of time points per windowed segment
                     next_window, hE_new = self.model(external, X, hE)
 
-                    # Get the b atch of empirical signal.
-                    # ts_window = torch.tensor(windowedTS[win_idx, :, :], dtype=torch.float32)   # replace with the FC
+                    # Calculating loss
+                    recon_loss = self.cost.loss(next_window, fc_emp)
+                    recon_accum = recon_accum + recon_loss
+                    if win_idx >= offset:
+                        stack_ts.append(next_window["bold"])
 
-                    # calculating loss
-                    loss = self.cost.loss(next_window, fc_emp)
+                    if win_idx >= offset and (win_idx + 1) % k_stack == offset:
+                        if self.use_adv:
+                            stacked_bold = torch.cat(stack_ts, dim=1)          # (N, 400)
+                            stacked_fc   = torch.corrcoef(stacked_bold)
+                            p_fake       = self.disc(stacked_fc.unsqueeze(0))  # shape (1,1)
+                            # INSERT_YOUR_CODE
+                            if i_epoch == 0:
+                                import matplotlib.pyplot as plt
+                                import os
+                                save_dir = "adv_fc_plots"
+                                os.makedirs(save_dir, exist_ok=True)
+                                out_path = os.path.abspath(os.path.join(save_dir, f"fc_epoch0_w{win_idx:03d}.png"))
+                                print(f"Saving FC plot to: {out_path}")
+                                plt.figure(figsize=(6,5))
+                                plt.imshow(stacked_fc.detach().cpu().numpy(), vmin=-1, vmax=1, cmap='coolwarm')
+                                plt.colorbar()
+                                plt.title(f"FCp_fake={p_fake.item():.3f}")
+                                plt.tight_layout()
+                                try:
+                                    plt.savefig(out_path)
+                                    print(f"Saved to {out_path}")
+                                except Exception as e:
+                                    print(f"Failed to save figure: {e}")
+                                plt.close()
+                            adv_loss     = self.lambda_adv * bce(
+                                                p_fake,
+                                                torch.ones_like(p_fake, device=DEVICE))
+                        else:
+                            adv_loss = torch.tensor(0.0, device=DEVICE)
+                        total_loss = recon_accum / k_stack + adv_loss
+
+                        hyperparameter_optimizer.zero_grad()
+                        modelparameter_optimizer.zero_grad()
+                        total_loss.backward()
+                        hyperparameter_optimizer.step()
+                        modelparameter_optimizer.step()
+                        
+                        stack_ts.clear()
+                        recon_accum = torch.zeros((), device=DEVICE)
+                        # recon_accum.zero_()
+                        loss_his.append(total_loss.detach().cpu().item())
+                        if self.use_adv:
+                            print(f"recon={recon_loss.item():.4f}  "
+                                f"adv={adv_loss.item():.4f}  "
+                                f"disc(p)={p_fake.item():.3f}")
+
                      
                     # TIME SERIES: Put the window of simulated forward model.
                     for name in set(self.model.state_names + self.model.output_names):
                         windListDict[name].append(next_window[name].detach().cpu().numpy())
-                    #     print(f"{name} = ({next_window[name].detach().mean().cpu().item():.3f}, {next_window[name].detach().std(dim=[0, 1]).cpu().item():.3f}) | ", end="")
-                    # print()
 
-                    # TRAINING_STATS: Adding Loss for every training window (corresponding to one backpropagation)
-                    loss_his.append(loss.detach().cpu().numpy())
-
-                    # Calculate gradient using backward (backpropagation) method of the loss function.
-                    loss.backward(retain_graph=True)
-                    # print("g.grad =", self.model.params.g.val.grad.abs().max())
-
-                    # DEBUGGER CODE - #TODO: REMOVE
-                    if torch.isnan(self.model.gains_con.H).any().item():
-                        print(1)
-                        print(i_epoch)
-                        break  
-
-                    # Optimize the model based on the gradient method in updating the model parameters.
-                    hyperparameter_optimizer.step()
-
-                    if torch.isnan(self.model.gains_con.H).any().item():
-                        print(3)
-                        print(i_epoch)
-                        break  
-
-                    modelparameter_optimizer.step()    # this is what's breaking things
-
-                    # DEBUGGER CODE - #TODO: REMOVE
-                    if torch.isnan(self.model.gains_con.H).any().item():
-                        print(2)
-                        print(i_epoch)
-                        break  
-                    
                     if lr_scheduler:
                         #appending (needed to plot learning rate)
                         hlrs.append(hyperparameter_optimizer.param_groups[0]["lr"])
@@ -251,9 +295,6 @@ class Model_fitting(AbstractFitting):
                     # (no direct use X = X_next, since gradient calculation only depends on one batch no history)
                     X = next_window['current_state'].detach().clone() # dtype=torch.float32
                     hE = hE_new.detach().clone() #dtype=torch.float32
-
-                # ts_emp = np.concatenate(list(windowedTS),1) #TODO: Check this code
-                # fc = np.corrcoef(t s_emp)
 
                 # TIME SERIES: Concatenate all windows together to get one recording
                 for name in set(self.model.state_names + self.model.output_names):
@@ -286,7 +327,7 @@ class Model_fitting(AbstractFitting):
                 f"g_EE={self.model.params.g_EE.val.item():.3f}  "
                 f"g_EI={self.model.params.g_EI.val.item():.3f} "
                 f"g_IE={self.model.params.g_IE.val.item():.3f} "
-                # f"kappa={self.model.params.kappa.val.item():.2f}"
+                f"kappa={self.model.params.kappa.val.item():.2f}"
             )
 
             # NMM/Other Parameter info for the Epoch (a list where a number is recorded every window of every record)            

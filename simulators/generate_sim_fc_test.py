@@ -37,9 +37,12 @@ def main():
 
     subj = args.subj
 
-    grid_chunks = [50, 100]
-    gs = [800, 1000, 1200]
-    grid_flags  = [(e, i, fic) for e in [True, False] for i in [True, False] for fic in [True, False]]
+    # grid_chunks = [50, 100]
+    # gs = [800, 1000, 1200]
+    # grid_flags  = [(e, i, fic) for e in [True, False] for i in [True, False] for fic in [True, False]]
+    grid_chunks = [100]
+    gs = [1200]
+    grid_flags  = [(e, i, fic) for e in [False] for i in [True] for fic in [True]]
     results = {}
     
     ts_emp = loader.all_bold[subj]
@@ -64,7 +67,7 @@ def main():
                 # emp_FCs = [full_FC]            
                 train_window_length = 900
                 emp_FCs = loader.train_fc_windows(subj, win_len=train_window_length)
-                train_num_windows = train_window_length // chunk
+                train_num_windows = 2000 // chunk
 
                 cost = CostsRWW(sim.model,
                                 use_rate_reg = args.lambda_rate > 0, lambda_rate = args.lambda_rate,
@@ -91,7 +94,7 @@ def main():
                 # heatmap_fc(fc_sim, fc_test, subj=subj, r=r, subtitle=label, tag=label, subdir="sim_fc")
                 if mean_corr > 0.5:
                     np.save(SAVE_DIR / f"{label}.npy", ts_sim)
-                    timeseries(ts_sim[:, 50:100], emp_ts[:, 50:100], max_nodes=6, tr=0.75, sep=True, tag=label, subdir="plots", outdir="simulated_outputs")
+                    timeseries(ts_sim[:, 50:100], ts_emp[:, 50:100], max_nodes=6, tr=0.75, sep=True, tag=label, subdir="plots", outdir="simulated_outputs")
 
     Path("grid_results").mkdir(exist_ok=True)
     with open("grid_results/summary.json", "w") as fp:
