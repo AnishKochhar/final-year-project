@@ -8,7 +8,7 @@ import torch
 import torch.optim as optim
 import pickle, random
 
-from whobpyt.models.fc_cnn_disc import FCCNNDisc
+from whobpyt.models.fc_cnn_disc import FCCNNDisc, LightFCCNN
 from whobpyt.datatypes import Recording
 from whobpyt.datatypes.AbstractFitting import AbstractFitting
 from whobpyt.datatypes.AbstractNMM import AbstractNMM
@@ -17,6 +17,13 @@ from whobpyt.datatypes.outputs import TrainingStats
 from whobpyt.arg_type_check import method_arg_type_check
 from whobpyt.utils.plotter import heatmap_fc
 from whobpyt.data_loader import DEVICE
+
+    
+def d_loss_fn(real_scores, fake_scores):
+    return (torch.relu(1. - real_scores).mean() + torch.relu(1. + fake_scores).mean())
+
+def g_loss_fn(fake_scores):
+    return -fake_scores.mean()
 
 
 class Model_fitting(AbstractFitting):
@@ -72,13 +79,13 @@ class Model_fitting(AbstractFitting):
 
         self.use_adv = use_adv
         self.lambda_adv = lambda_adv
-        if self.use_adv:
-            self.disc = FCCNNDisc(model.output_size).to(DEVICE)
-            if disc_path is not None:
-                self.disc.load_state_dict(torch.load(disc_path, map_location=DEVICE))
-            else:
-                print(f"[Model Fitting] No discriminator loaded!")
-            self.disc.eval()    
+        # if self.use_adv:
+        self.disc = LightFCCNN(model.output_size).to(DEVICE)
+        if disc_path is not None:
+            self.disc.load_state_dict(torch.load(disc_path, map_location=DEVICE))
+        else:
+            print(f"[Model Fitting] No discriminator loaded!")
+        self.disc.eval()    
 
         #self.u = None #This is the ML "Training Input"                
         #self.empTS = ts #This is the ML "Training Labels" - A list
@@ -103,7 +110,12 @@ class Model_fitting(AbstractFitting):
         """
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
-    
+
+    def adv_weight(self, epoch, warm=5, max_lambda=0.5):
+        if epoch < warm: return max_lambda * (epoch + 1) / warm
+        return max_lambda
+
+
     def early_stop(self, curr_loss):
         if curr_loss < self.best_loss - self.min_delta:
             self.best_loss = curr_loss
@@ -232,32 +244,13 @@ class Model_fitting(AbstractFitting):
                         stack_ts.append(next_window["bold"])
 
                     if win_idx >= offset and (win_idx + 1) % k_stack == offset:
+                        stacked_bold = torch.cat(stack_ts, dim=1)          # (N, 400)
+                        stacked_fc   = torch.corrcoef(stacked_bold)
+                        p_fake       = self.disc(stacked_fc[None, None])  # shape (1, 1)
+                        # print(f"p_fake = {p_fake.item()}")
                         if self.use_adv:
-                            stacked_bold = torch.cat(stack_ts, dim=1)          # (N, 400)
-                            stacked_fc   = torch.corrcoef(stacked_bold)
-                            p_fake       = self.disc(stacked_fc.unsqueeze(0))  # shape (1,1)
-                            # INSERT_YOUR_CODE
-                            if i_epoch == 0:
-                                import matplotlib.pyplot as plt
-                                import os
-                                save_dir = "adv_fc_plots"
-                                os.makedirs(save_dir, exist_ok=True)
-                                out_path = os.path.abspath(os.path.join(save_dir, f"fc_epoch0_w{win_idx:03d}.png"))
-                                print(f"Saving FC plot to: {out_path}")
-                                plt.figure(figsize=(6,5))
-                                plt.imshow(stacked_fc.detach().cpu().numpy(), vmin=-1, vmax=1, cmap='coolwarm')
-                                plt.colorbar()
-                                plt.title(f"FCp_fake={p_fake.item():.3f}")
-                                plt.tight_layout()
-                                try:
-                                    plt.savefig(out_path)
-                                    print(f"Saved to {out_path}")
-                                except Exception as e:
-                                    print(f"Failed to save figure: {e}")
-                                plt.close()
-                            adv_loss     = self.lambda_adv * bce(
-                                                p_fake,
-                                                torch.ones_like(p_fake, device=DEVICE))
+                            lambda_curr  = self.adv_weight(i_epoch, warm=5, max_lambda=self.lambda_adv)
+                            adv_loss     = lambda_curr * g_loss_fn(p_fake)
                         else:
                             adv_loss = torch.tensor(0.0, device=DEVICE)
                         total_loss = recon_accum / k_stack + adv_loss
@@ -272,10 +265,9 @@ class Model_fitting(AbstractFitting):
                         recon_accum = torch.zeros((), device=DEVICE)
                         # recon_accum.zero_()
                         loss_his.append(total_loss.detach().cpu().item())
-                        if self.use_adv:
-                            print(f"recon={recon_loss.item():.4f}  "
-                                f"adv={adv_loss.item():.4f}  "
-                                f"disc(p)={p_fake.item():.3f}")
+                        print(f"recon={recon_loss.item():.4f}  "
+                            f"adv={adv_loss.item():.4f}  "
+                            f"disc(p)={p_fake.item():.3f}")
 
                      
                     # TIME SERIES: Put the window of simulated forward model.

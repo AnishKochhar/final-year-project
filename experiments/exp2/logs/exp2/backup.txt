@@ -1,0 +1,352 @@
+
+=== Fitting WITH adversarial loss ===
+offset = 1
+[Trainer] Fitting 1 FC matrices with 15 windows of 100 TRs
+p_fake = -1.341462254524231
+recon=18.7596  adv=0.0268  disc(p)=-1.341
+p_fake = -1.468247652053833
+recon=16.2574  adv=0.0294  disc(p)=-1.468
+p_fake = -1.6752443313598633
+recon=14.5688  adv=0.0335  disc(p)=-1.675
+[1 / 1] FC_cor: 0.081
+epoch 000  loss=18.0874  g=1199.979  g_EE=3.500  g_EI=0.713 g_IE=0.420 kappa=0.93
+p_fake = -1.417316198348999
+recon=12.1597  adv=0.0567  disc(p)=-1.417
+p_fake = -1.5203008651733398
+recon=10.7261  adv=0.0608  disc(p)=-1.520
+p_fake = -1.5280303955078125
+recon=10.0994  adv=0.0611  disc(p)=-1.528
+[1 / 1] FC_cor: 0.137
+epoch 001  loss=12.2156  g=1200.072  g_EE=3.500  g_EI=0.985 g_IE=0.420 kappa=0.75
+p_fake = -1.4332767724990845
+recon=9.1791  adv=0.0860  disc(p)=-1.433
+p_fake = -1.5002132654190063
+recon=8.8418  adv=0.0900  disc(p)=-1.500
+p_fake = -1.5089664459228516
+recon=9.4895  adv=0.0905  disc(p)=-1.509
+[1 / 1] FC_cor: 0.202
+epoch 002  loss=9.9104  g=1200.006  g_EE=3.500  g_EI=1.202 g_IE=0.420 kappa=0.58
+p_fake = -1.4977264404296875
+recon=9.0440  adv=0.1198  disc(p)=-1.498
+p_fake = -1.3862335681915283
+recon=8.0524  adv=0.1109  disc(p)=-1.386
+p_fake = -1.5269259214401245
+recon=9.2690  adv=0.1222  disc(p)=-1.527
+[1 / 1] FC_cor: 0.325
+epoch 003  loss=9.7381  g=1200.054  g_EE=3.500  g_EI=1.325 g_IE=0.420 kappa=0.36
+p_fake = -1.3238308429718018
+recon=9.5911  adv=0.1324  disc(p)=-1.324
+p_fake = -1.433061957359314
+recon=8.8970  adv=0.1433  disc(p)=-1.433
+p_fake = -1.438272476196289
+recon=8.8277  adv=0.1438  disc(p)=-1.438
+[1 / 1] FC_cor: 0.197
+epoch 004  loss=10.0751  g=1200.020  g_EE=3.500  g_EI=1.348 g_IE=0.420 kappa=0.13
+p_fake = -1.2921092510223389
+recon=9.0201  adv=0.1292  disc(p)=-1.292
+p_fake = -1.2443203926086426
+recon=7.8981  adv=0.1244  disc(p)=-1.244
+p_fake = -1.4168633222579956
+recon=9.0340  adv=0.1417  disc(p)=-1.417
+[1 / 1] FC_cor: 0.279
+epoch 005  loss=9.7816  g=1200.045  g_EE=3.500  g_EI=1.300 g_IE=0.420 kappa=0.11
+p_fake = -1.3190888166427612
+recon=8.7179  adv=0.1319  disc(p)=-1.319
+p_fake = -1.282899260520935
+recon=7.7938  adv=0.1283  disc(p)=-1.283
+p_fake = -1.406599998474121
+recon=8.8579  adv=0.1407  disc(p)=-1.407
+[1 / 1] FC_cor: 0.308
+epoch 006  loss=9.1951  g=1200.026  g_EE=3.500  g_EI=1.212 g_IE=0.420 kappa=0.12
+p_fake = -1.4229018688201904
+recon=7.8568  adv=0.1423  disc(p)=-1.423
+p_fake = -1.302493929862976
+recon=7.6292  adv=0.1302  disc(p)=-1.302
+p_fake = -1.4667243957519531
+recon=8.3302  adv=0.1467  disc(p)=-1.467
+[1 / 1] FC_cor: 0.217
+epoch 007  loss=8.6997  g=1200.042  g_EE=3.500  g_EI=1.119 g_IE=0.420 kappa=0.20
+p_fake = -1.283672571182251
+recon=8.3920  adv=0.1284  disc(p)=-1.284
+p_fake = -1.3373939990997314
+recon=7.4292  adv=0.1337  disc(p)=-1.337
+p_fake = -1.3994101285934448
+recon=8.0076  adv=0.1399  disc(p)=-1.399
+[1 / 1] FC_cor: 0.289
+epoch 008  loss=8.3080  g=1200.029  g_EE=3.500  g_EI=1.044 g_IE=0.420 kappa=0.29
+p_fake = -1.3971800804138184
+recon=7.4208  adv=0.1397  disc(p)=-1.397
+p_fake = -1.384434700012207
+recon=7.8214  adv=0.1384  disc(p)=-1.384
+p_fake = -1.2319116592407227
+recon=8.2481  adv=0.1232  disc(p)=-1.232
+[1 / 1] FC_cor: 0.330
+epoch 009  loss=8.2498  g=1200.036  g_EE=3.500  g_EI=1.002 g_IE=0.420 kappa=0.32
+p_fake = -1.1844791173934937
+recon=7.0951  adv=0.1184  disc(p)=-1.184
+p_fake = -1.2563104629516602
+recon=7.6613  adv=0.1256  disc(p)=-1.256
+p_fake = -1.3194937705993652
+recon=7.8204  adv=0.1319  disc(p)=-1.319
+[1 / 1] FC_cor: 0.377
+epoch 010  loss=8.1635  g=1200.037  g_EE=3.500  g_EI=1.002 g_IE=0.420 kappa=0.30
+p_fake = -1.365914225578308
+recon=7.7328  adv=0.1366  disc(p)=-1.366
+p_fake = -1.2129186391830444
+recon=7.5536  adv=0.1213  disc(p)=-1.213
+p_fake = -1.1909382343292236
+recon=7.3965  adv=0.1191  disc(p)=-1.191
+[1 / 1] FC_cor: 0.349
+epoch 011  loss=8.1006  g=1200.030  g_EE=3.500  g_EI=1.034 g_IE=0.420 kappa=0.24
+p_fake = -1.2346690893173218
+recon=6.7143  adv=0.1235  disc(p)=-1.235
+p_fake = -1.1462769508361816
+recon=8.2181  adv=0.1146  disc(p)=-1.146
+p_fake = -1.1726622581481934
+recon=7.2305  adv=0.1173  disc(p)=-1.173
+[1 / 1] FC_cor: 0.366
+epoch 012  loss=7.8382  g=1200.036  g_EE=3.500  g_EI=1.077 g_IE=0.420 kappa=0.14
+p_fake = -0.8523653745651245
+recon=7.1329  adv=0.0852  disc(p)=-0.852
+p_fake = -0.9242852330207825
+recon=6.7543  adv=0.0924  disc(p)=-0.924
+p_fake = -1.1532082557678223
+recon=7.0286  adv=0.1153  disc(p)=-1.153
+[1 / 1] FC_cor: 0.440
+epoch 013  loss=7.3726  g=1200.037  g_EE=3.500  g_EI=1.115 g_IE=0.420 kappa=0.16
+p_fake = -1.2640142440795898
+recon=7.3543  adv=0.1264  disc(p)=-1.264
+p_fake = -1.2344285249710083
+recon=6.9386  adv=0.1234  disc(p)=-1.234
+p_fake = -1.1947338581085205
+recon=6.9295  adv=0.1195  disc(p)=-1.195
+[1 / 1] FC_cor: 0.428
+epoch 014  loss=7.6107  g=1200.033  g_EE=3.500  g_EI=1.128 g_IE=0.420 kappa=0.11
+p_fake = -1.0108298063278198
+recon=5.4887  adv=0.1011  disc(p)=-1.011
+p_fake = -1.0412386655807495
+recon=6.4875  adv=0.1041  disc(p)=-1.041
+p_fake = -0.9512344002723694
+recon=7.7782  adv=0.0951  disc(p)=-0.951
+[1 / 1] FC_cor: 0.427
+epoch 015  loss=7.4600  g=1200.032  g_EE=3.500  g_EI=1.122 g_IE=0.420 kappa=0.08
+p_fake = -1.1081831455230713
+recon=5.8725  adv=0.1108  disc(p)=-1.108
+p_fake = -1.0667552947998047
+recon=7.2957  adv=0.1067  disc(p)=-1.067
+p_fake = -0.9405383467674255
+recon=6.4241  adv=0.0941  disc(p)=-0.941
+[1 / 1] FC_cor: 0.477
+epoch 016  loss=7.1997  g=1200.035  g_EE=3.500  g_EI=1.103 g_IE=0.420 kappa=0.06
+p_fake = -0.9911627173423767
+recon=5.9091  adv=0.0991  disc(p)=-0.991
+p_fake = -0.9629867672920227
+recon=6.7067  adv=0.0963  disc(p)=-0.963
+p_fake = -1.158937931060791
+recon=6.7906  adv=0.1159  disc(p)=-1.159
+[1 / 1] FC_cor: 0.325
+epoch 017  loss=7.2700  g=1200.036  g_EE=3.500  g_EI=1.080 g_IE=0.420 kappa=0.11
+p_fake = -0.616609513759613
+recon=6.7521  adv=0.0617  disc(p)=-0.617
+p_fake = -1.2364600896835327
+recon=6.3446  adv=0.1236  disc(p)=-1.236
+p_fake = -0.8888711929321289
+recon=6.5543  adv=0.0889  disc(p)=-0.889
+[1 / 1] FC_cor: 0.489
+epoch 018  loss=7.0700  g=1200.037  g_EE=3.500  g_EI=1.058 g_IE=0.420 kappa=0.08
+p_fake = -1.081398606300354
+recon=6.6357  adv=0.1081  disc(p)=-1.081
+p_fake = -0.7070200443267822
+recon=6.2206  adv=0.0707  disc(p)=-0.707
+p_fake = -1.216073989868164
+recon=7.0862  adv=0.1216  disc(p)=-1.216
+[1 / 1] FC_cor: 0.446
+epoch 019  loss=7.0601  g=1200.036  g_EE=3.500  g_EI=1.048 g_IE=0.420 kappa=0.02
+p_fake = -1.0570071935653687
+recon=5.8615  adv=0.1057  disc(p)=-1.057
+p_fake = -0.4028211832046509
+recon=6.0528  adv=0.0403  disc(p)=-0.403
+p_fake = -0.6672844290733337
+recon=5.7332  adv=0.0667  disc(p)=-0.667
+[1 / 1] FC_cor: 0.406
+epoch 020  loss=6.7619  g=1200.036  g_EE=3.500  g_EI=1.052 g_IE=0.420 kappa=-0.05
+p_fake = -1.0307121276855469
+recon=6.7845  adv=0.1031  disc(p)=-1.031
+p_fake = -1.259501576423645
+recon=6.8419  adv=0.1260  disc(p)=-1.260
+p_fake = -1.0968706607818604
+recon=6.6988  adv=0.1097  disc(p)=-1.097
+[1 / 1] FC_cor: 0.483
+epoch 021  loss=7.0790  g=1200.036  g_EE=3.500  g_EI=1.064 g_IE=0.420 kappa=-0.13
+p_fake = -0.8833643794059753
+recon=6.4164  adv=0.0883  disc(p)=-0.883
+p_fake = 0.24033862352371216
+recon=4.8383  adv=-0.0240  disc(p)=0.240
+p_fake = -0.739675760269165
+recon=6.3980  adv=0.0740  disc(p)=-0.740
+[1 / 1] FC_cor: 0.504
+epoch 022  loss=6.5679  g=1200.036  g_EE=3.500  g_EI=1.076 g_IE=0.420 kappa=-0.18
+p_fake = -1.073482632637024
+recon=6.9697  adv=0.1073  disc(p)=-1.073
+p_fake = -0.1786644160747528
+recon=5.0712  adv=0.0179  disc(p)=-0.179
+p_fake = -0.9484055638313293
+recon=6.7485  adv=0.0948  disc(p)=-0.948
+[1 / 1] FC_cor: 0.552
+epoch 023  loss=6.5892  g=1200.037  g_EE=3.500  g_EI=1.082 g_IE=0.420 kappa=-0.22
+p_fake = -0.032870031893253326
+recon=5.9441  adv=0.0033  disc(p)=-0.033
+p_fake = -0.842572033405304
+recon=5.4728  adv=0.0843  disc(p)=-0.843
+p_fake = -0.8998849987983704
+recon=6.5433  adv=0.0900  disc(p)=-0.900
+[1 / 1] FC_cor: 0.546
+epoch 024  loss=6.5458  g=1200.036  g_EE=3.500  g_EI=1.082 g_IE=0.420 kappa=-0.25
+p_fake = -0.4805735945701599
+recon=5.8160  adv=0.0481  disc(p)=-0.481
+p_fake = -0.5362517833709717
+recon=5.4099  adv=0.0536  disc(p)=-0.536
+p_fake = -0.060634978115558624
+recon=5.6164  adv=0.0061  disc(p)=-0.061
+[1 / 1] FC_cor: 0.604
+epoch 025  loss=6.1701  g=1200.036  g_EE=3.500  g_EI=1.076 g_IE=0.420 kappa=-0.27
+p_fake = -0.8602842688560486
+recon=5.9643  adv=0.0860  disc(p)=-0.860
+p_fake = -0.8603580594062805
+recon=5.8674  adv=0.0860  disc(p)=-0.860
+p_fake = -0.48248881101608276
+recon=6.0953  adv=0.0482  disc(p)=-0.482
+[1 / 1] FC_cor: 0.554
+epoch 026  loss=6.4457  g=1200.036  g_EE=3.500  g_EI=1.070 g_IE=0.420 kappa=-0.29
+p_fake = -0.5538297295570374
+recon=5.4944  adv=0.0554  disc(p)=-0.554
+p_fake = -0.6051587462425232
+recon=5.6847  adv=0.0605  disc(p)=-0.605
+p_fake = -0.4123089611530304
+recon=5.6686  adv=0.0412  disc(p)=-0.412
+[1 / 1] FC_cor: 0.581
+epoch 027  loss=6.1668  g=1200.040  g_EE=3.500  g_EI=1.065 g_IE=0.420 kappa=-0.30
+p_fake = -0.027293406426906586
+recon=4.6439  adv=0.0027  disc(p)=-0.027
+p_fake = -0.16742859780788422
+recon=5.4724  adv=0.0167  disc(p)=-0.167
+p_fake = -0.027670331299304962
+recon=4.7678  adv=0.0028  disc(p)=-0.028
+[1 / 1] FC_cor: 0.624
+epoch 028  loss=5.7233  g=1200.042  g_EE=3.500  g_EI=1.066 g_IE=0.420 kappa=-0.31
+p_fake = -0.7874897122383118
+recon=6.3538  adv=0.0787  disc(p)=-0.787
+p_fake = 0.07005900889635086
+recon=6.0239  adv=-0.0070  disc(p)=0.070
+p_fake = -0.44417858123779297
+recon=5.3190  adv=0.0444  disc(p)=-0.444
+[1 / 1] FC_cor: 0.599
+epoch 029  loss=6.2242  g=1200.040  g_EE=3.500  g_EI=1.069 g_IE=0.420 kappa=-0.32
+p_fake = -0.24479326605796814
+recon=5.5109  adv=0.0245  disc(p)=-0.245
+p_fake = -0.5136571526527405
+recon=4.8947  adv=0.0514  disc(p)=-0.514
+p_fake = -0.4577215611934662
+recon=5.7155  adv=0.0458  disc(p)=-0.458
+[1 / 1] FC_cor: 0.605
+epoch 030  loss=5.8885  g=1200.047  g_EE=3.500  g_EI=1.074 g_IE=0.420 kappa=-0.32
+p_fake = -0.354220449924469
+recon=5.3715  adv=0.0354  disc(p)=-0.354
+p_fake = -0.9707978367805481
+recon=5.9553  adv=0.0971  disc(p)=-0.971
+p_fake = 0.4365084767341614
+recon=5.2196  adv=-0.0437  disc(p)=0.437
+[1 / 1] FC_cor: 0.617
+epoch 031  loss=5.8730  g=1200.040  g_EE=3.500  g_EI=1.077 g_IE=0.420 kappa=-0.33
+p_fake = -0.734600305557251
+recon=5.8762  adv=0.0735  disc(p)=-0.735
+p_fake = 0.07574104517698288
+recon=5.2444  adv=-0.0076  disc(p)=0.076
+p_fake = -0.3075083792209625
+recon=5.3366  adv=0.0308  disc(p)=-0.308
+[1 / 1] FC_cor: 0.604
+epoch 032  loss=5.9385  g=1200.050  g_EE=3.500  g_EI=1.078 g_IE=0.420 kappa=-0.33
+p_fake = 0.12320493161678314
+recon=5.0189  adv=-0.0123  disc(p)=0.123
+p_fake = -0.43774092197418213
+recon=4.8994  adv=0.0438  disc(p)=-0.438
+p_fake = -0.0037898821756243706
+recon=5.0323  adv=0.0004  disc(p)=-0.004
+[1 / 1] FC_cor: 0.595
+epoch 033  loss=5.8581  g=1200.053  g_EE=3.500  g_EI=1.077 g_IE=0.420 kappa=-0.33
+
+=== Fitting WITHOUT adversarial loss ===
+offset = 1
+[Trainer] Fitting 1 FC matrices with 15 windows of 100 TRs
+[1 / 1] FC_cor: 0.135
+epoch 000  loss=17.7909  g=1199.979  g_EE=3.500  g_EI=0.713 g_IE=0.420 kappa=0.72
+[1 / 1] FC_cor: 0.164
+epoch 001  loss=12.0347  g=1200.072  g_EE=3.500  g_EI=0.984 g_IE=0.420 kappa=0.49
+[1 / 1] FC_cor: 0.210
+epoch 002  loss=9.9559  g=1200.006  g_EE=3.500  g_EI=1.203 g_IE=0.420 kappa=0.32
+[1 / 1] FC_cor: 0.258
+epoch 003  loss=9.5683  g=1200.054  g_EE=3.500  g_EI=1.334 g_IE=0.420 kappa=0.26
+[1 / 1] FC_cor: 0.216
+epoch 004  loss=10.0409  g=1200.020  g_EE=3.500  g_EI=1.365 g_IE=0.420 kappa=0.26
+[1 / 1] FC_cor: 0.282
+epoch 005  loss=9.7150  g=1200.045  g_EE=3.500  g_EI=1.318 g_IE=0.420 kappa=0.29
+[1 / 1] FC_cor: 0.349
+epoch 006  loss=9.0114  g=1200.025  g_EE=3.500  g_EI=1.226 g_IE=0.420 kappa=0.18
+[1 / 1] FC_cor: 0.359
+epoch 007  loss=8.3863  g=1200.042  g_EE=3.500  g_EI=1.125 g_IE=0.420 kappa=0.14
+[1 / 1] FC_cor: 0.239
+epoch 008  loss=8.1708  g=1200.029  g_EE=3.500  g_EI=1.051 g_IE=0.420 kappa=0.23
+[1 / 1] FC_cor: 0.316
+epoch 009  loss=8.1601  g=1200.036  g_EE=3.500  g_EI=1.016 g_IE=0.420 kappa=0.30
+[1 / 1] FC_cor: 0.432
+epoch 010  loss=7.8518  g=1200.037  g_EE=3.500  g_EI=1.020 g_IE=0.420 kappa=0.31
+[1 / 1] FC_cor: 0.333
+epoch 011  loss=8.0926  g=1200.029  g_EE=3.500  g_EI=1.054 g_IE=0.420 kappa=0.26
+[1 / 1] FC_cor: 0.399
+epoch 012  loss=7.5374  g=1200.036  g_EE=3.500  g_EI=1.096 g_IE=0.420 kappa=0.14
+[1 / 1] FC_cor: 0.287
+epoch 013  loss=7.3637  g=1200.037  g_EE=3.500  g_EI=1.134 g_IE=0.420 kappa=0.05
+[1 / 1] FC_cor: 0.139
+epoch 014  loss=7.5095  g=1200.033  g_EE=3.500  g_EI=1.154 g_IE=0.420 kappa=0.15
+[1 / 1] FC_cor: 0.450
+epoch 015  loss=7.3666  g=1200.032  g_EE=3.500  g_EI=1.150 g_IE=0.420 kappa=0.24
+[1 / 1] FC_cor: 0.490
+epoch 016  loss=7.1987  g=1200.035  g_EE=3.500  g_EI=1.124 g_IE=0.420 kappa=0.24
+[1 / 1] FC_cor: 0.498
+epoch 017  loss=7.0019  g=1200.037  g_EE=3.500  g_EI=1.085 g_IE=0.420 kappa=0.13
+[1 / 1] FC_cor: 0.417
+epoch 018  loss=6.9893  g=1200.037  g_EE=3.500  g_EI=1.061 g_IE=0.420 kappa=0.05
+[1 / 1] FC_cor: 0.485
+epoch 019  loss=7.1258  g=1200.037  g_EE=3.500  g_EI=1.053 g_IE=0.420 kappa=0.05
+[1 / 1] FC_cor: 0.493
+epoch 020  loss=6.6323  g=1200.037  g_EE=3.500  g_EI=1.059 g_IE=0.420 kappa=0.05
+[1 / 1] FC_cor: 0.548
+epoch 021  loss=6.2865  g=1200.037  g_EE=3.500  g_EI=1.075 g_IE=0.420 kappa=0.07
+[1 / 1] FC_cor: 0.518
+epoch 022  loss=6.6459  g=1200.037  g_EE=3.500  g_EI=1.091 g_IE=0.420 kappa=0.05
+[1 / 1] FC_cor: 0.212
+epoch 023  loss=6.3819  g=1200.037  g_EE=3.500  g_EI=1.094 g_IE=0.420 kappa=-0.04
+[1 / 1] FC_cor: 0.562
+epoch 024  loss=6.4067  g=1200.037  g_EE=3.500  g_EI=1.088 g_IE=0.420 kappa=-0.10
+[1 / 1] FC_cor: 0.607
+epoch 025  loss=6.1438  g=1200.037  g_EE=3.500  g_EI=1.079 g_IE=0.420 kappa=-0.14
+[1 / 1] FC_cor: 0.567
+epoch 026  loss=6.3615  g=1200.037  g_EE=3.500  g_EI=1.070 g_IE=0.420 kappa=-0.18
+[1 / 1] FC_cor: 0.608
+epoch 027  loss=5.8761  g=1200.040  g_EE=3.500  g_EI=1.067 g_IE=0.420 kappa=-0.20
+[1 / 1] FC_cor: 0.551
+epoch 028  loss=6.3916  g=1200.042  g_EE=3.500  g_EI=1.069 g_IE=0.420 kappa=-0.22
+[1 / 1] FC_cor: 0.584
+epoch 029  loss=6.0425  g=1200.041  g_EE=3.500  g_EI=1.074 g_IE=0.420 kappa=-0.23
+[1 / 1] FC_cor: 0.641
+epoch 030  loss=5.7734  g=1200.049  g_EE=3.500  g_EI=1.079 g_IE=0.420 kappa=-0.25
+[1 / 1] FC_cor: 0.561
+epoch 031  loss=6.1709  g=1200.038  g_EE=3.500  g_EI=1.081 g_IE=0.420 kappa=-0.25
+[1 / 1] FC_cor: 0.584
+epoch 032  loss=6.0124  g=1200.044  g_EE=3.500  g_EI=1.081 g_IE=0.420 kappa=-0.26
+[1 / 1] FC_cor: 0.617
+epoch 033  loss=5.8380  g=1200.050  g_EE=3.500  g_EI=1.079 g_IE=0.420 kappa=-0.26
+[1 / 1] FC_cor: 0.628
+epoch 034  loss=5.7970  g=1200.053  g_EE=3.500  g_EI=1.077 g_IE=0.420 kappa=-0.27
+[1 / 1] FC_cor: 0.607
+epoch 035  loss=5.9089  g=1200.053  g_EE=3.500  g_EI=1.076 g_IE=0.420 kappa=-0.27
